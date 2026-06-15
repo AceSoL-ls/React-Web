@@ -1,4 +1,4 @@
-# React Web Application
+# React Web Lab
 
 A modern web application built with React.
 
