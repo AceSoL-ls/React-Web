@@ -14,17 +14,23 @@ function decreaseLikes(){
  }
 
 return(
- <div>
-  <img src={image} alt={name}></img>
-  <h2>{name}</h2>
-  <p>Game:{game}</p>
-  <p>Level:{level}</p>
-  <p>Likes:{likes}</p>
-  <p>Gold:{gold}</p>
-  <button onClick={increaseLikes}>+</button>
-  <button onClick={decreaseLikes}>-</button>
-  <button onClick={resetLikes}>Reset</button>
- </div>
+  <div className="player-card">
+    <div className="card-header">
+      <img src={image} alt={name} className="player-avatar"></img>
+      <h2>{name}</h2>
+    </div>
+    <div className="card-stats">
+      <p><strong>Game:</strong> {game}</p>
+      <p><strong>Level:</strong> {level}</p>
+      <p><strong>Likes:</strong> {likes}</p>
+      <p><strong>Gold:</strong> {gold}</p>
+    </div>
+    <div className="card-actions">
+      <button onClick={increaseLikes} className="btn-add">+</button>
+      <button onClick={decreaseLikes} className="btn-sub">-</button>
+      <button onClick={resetLikes} className="btn-reset">Reset</button>
+    </div>
+  </div>
  )
 }
 
