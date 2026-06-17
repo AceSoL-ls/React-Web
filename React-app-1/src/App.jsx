@@ -11,10 +11,6 @@ function App(){
  return(
   <div className="dashboard-container">
    <h1 className="dashboard-title">Leaderboard Lab ⚔️</h1>
-<<<<<<< HEAD
-=======
-   
->>>>>>> d0183df94f79f8bde382810e980c919218bcb2e3
    <div className="player-grid">
    <PlayerCard 
    name = "Nick" 
