@@ -13,32 +13,43 @@ body {
   padding: 40px 20px;
 }
 
-.app-container {
+.dashboard-title {
+  text-align: center;
+  color: #ffb800;
+  font-size: 2.5rem;
+  margin-bottom: 40px;
+}
+
+.dashboard-container {
   max-width: 1200px;
   margin: 0 auto;
   text-align: center;
 }
 
-.title {
+.dashboard-title {
+  text-align: center;
   font-size: 2.5rem;
   margin-bottom: 40px;
   color: var(--accent-gold);
 }
 
 /* Flexbox / Grid magic to align them neatly side-by-side */
-.cards-grid {
+.player-grid {
   display: flex;
   gap: 24px;
   justify-content: center;
   flex-wrap: wrap;
+  max-width: 1200px;
+  margin: 0 auto;
 }
 
 .player-card {
-  background: var(--card-bg);
+  background-color: #1a1a1e;
   border: 2px solid #29292e;
   border-radius: 12px;
   width: 280px;
   padding: 24px;
+  text-align: center;
   transition: transform 0.2s, border-color 0.2s;
 }
 
@@ -47,7 +58,7 @@ body {
   border-color: var(--accent-gold);
 }
 
-.player-avatar {
+.player-image {
   width: 100px;
   height: 100px;
   border-radius: 50%;
@@ -55,7 +66,7 @@ body {
   border: 3px solid var(--accent-gold);
 }
 
-.card-stats {
+.player-stats {
   text-align: left;
   margin: 20px 0;
   background: #202024;
@@ -63,11 +74,11 @@ body {
   border-radius: 8px;
 }
 
-.card-stats p {
+.player-stats p {
   margin: 8px 0;
 }
 
-.card-actions {
+.player-actions {
   display: flex;
   gap: 8px;
 }

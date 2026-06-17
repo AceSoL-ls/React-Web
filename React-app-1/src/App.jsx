@@ -9,9 +9,9 @@ import johnPic from './assets/John.png';
 function App(){
 
  return(
-  <div className="app-container">
-   <h1 className="title">Leaderboard Lab ⚔️</h1>
-   <div className="card-grid">
+  <div className="dashboard-container">
+   <h1 className="dashboard-title">Leaderboard Lab ⚔️</h1>
+   <div className="player-grid">
    <PlayerCard 
    name = "Nick" 
    game = "Lineage" 

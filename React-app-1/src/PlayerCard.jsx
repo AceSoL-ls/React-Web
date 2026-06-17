@@ -15,17 +15,17 @@ function decreaseLikes(){
 
 return(
   <div className="player-card">
-    <div className="card-header">
-      <img src={image} alt={name} className="player-avatar"></img>
-      <h2>{name}</h2>
-    </div>
-    <div className="card-stats">
+    <img src={image} alt={name} className="player-image"></img>
+    <h2 className="player-name">{name}</h2>
+  
+    <div className="player-stats">
       <p><strong>Game:</strong> {game}</p>
       <p><strong>Level:</strong> {level}</p>
       <p><strong>Likes:</strong> {likes}</p>
       <p><strong>Gold:</strong> {gold}</p>
     </div>
-    <div className="card-actions">
+
+    <div className="player-actions">
       <button onClick={increaseLikes} className="btn-add">+</button>
       <button onClick={decreaseLikes} className="btn-sub">-</button>
       <button onClick={resetLikes} className="btn-reset">Reset</button>
