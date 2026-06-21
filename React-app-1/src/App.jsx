@@ -1,6 +1,7 @@
 //Css Import here
 import './App.css';
 
+import AddPlayerForm from './AddPlayerForm';
 import PlayerCard from './PlayerCard';
 import nickPic from './assets/Nick.jpg';
 import mariaPic from './assets/Maria.jpg';
@@ -38,6 +39,8 @@ function App(){
  return(
   <div className="dashboard-container">
    <h1 className="dashboard-title">Leaderboard Lab ⚔️</h1>
+
+   <AddPlayerForm />
 
    <div className="player-grid">
       {PLAYERS_DATA.map((player) => (

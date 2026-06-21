@@ -74,6 +74,17 @@ body {
   border-radius: 8px;
 }
 
+.player-input{
+  width: 25%;
+  padding: 6px;
+  margin: 10px 0;
+  color: hsl(0, 0%, 0%);
+  background: hsl(0, 30%, 95%);
+  border: 2px solid hsl(0, 0%, 80%);
+  border-radius: 6px;
+  border-color: hsl(0, 0%, 80%);
+}
+
 .player-stats p {
   margin: 8px 0;
 }
@@ -95,12 +106,16 @@ button {
 }
 
 button:hover {
-  background: #383842;
+  background: #712c02;
 }
 
 .btn-reset {
   background: #cc2929;
 }
 .btn-reset:hover {
+  background: #e53939;
+}
+
+.btn-newPlayer {
   background: #e53939;
 }
