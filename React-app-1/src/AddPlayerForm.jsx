@@ -1,12 +1,21 @@
 import { useState } from "react";
 
-function AddPlayerForm() {
+function AddPlayerForm({onAddPlayer}) {
  const [playerName, setPlayerName] = useState("");
 
  function handleNameChange(event){
   setPlayerName(event.target.value);
-
  }
+
+ function handleSubmit(){
+  if(playerName.trim() === "") {
+   alert("Please enter a player name.");
+   return;
+  }
+  onAddPlayer(playerName);
+  setPlayerName("");
+ }
+ 
 
 
 return (
@@ -17,7 +26,7 @@ return (
    value={playerName}
    onChange={handleNameChange}
   />
-  <button onClick={() => console.log(playerName)} className="btn-newPlayer">Add New Player</button>
+  <button onClick={handleSubmit} className="btn-newPlayer">Add New Player</button>
  </div>
 );
 }

@@ -1,5 +1,6 @@
 //Css Import here
 import './App.css';
+import {useState} from 'react';
 
 import AddPlayerForm from './AddPlayerForm';
 import PlayerCard from './PlayerCard';
@@ -7,7 +8,10 @@ import nickPic from './assets/Nick.jpg';
 import mariaPic from './assets/Maria.jpg';
 import johnPic from './assets/John.png';
 
-const PLAYERS_DATA = [
+
+function App(){
+
+  const [players, setPlayers] = useState([
   {
     id: 1,
     name: "Nick",
@@ -32,18 +36,28 @@ const PLAYERS_DATA = [
     gold: "2000",
     image: johnPic
   }
-];
+]);
 
-function App(){
+function addNewPlayer(nameFromChild){
+  const newPlayerObj = {
+    id: Date.now(),
+    name: nameFromChild,
+    game: "Unknown",
+    level: "1",
+    gold: "0",
+    image: mariaPic
+  };
+  setPlayers(prevPlayers => [...prevPlayers, newPlayerObj]);
+}
 
  return(
   <div className="dashboard-container">
    <h1 className="dashboard-title">Leaderboard Lab ⚔️</h1>
 
-   <AddPlayerForm />
+   <AddPlayerForm onAddPlayer={addNewPlayer} />
 
    <div className="player-grid">
-      {PLAYERS_DATA.map((player) => (
+      {players.map((player) => (
          <PlayerCard
             key={player.id}
             name={player.name}
