@@ -9,8 +9,8 @@ function increaseLikes(){
 function decreaseLikes(){
  setLikes(prev => prev - 1);
  }
- function resetLikes(){
-  setLikes(0);
+function resetLikes(){
+ setLikes(0);
  }
 
 return (
