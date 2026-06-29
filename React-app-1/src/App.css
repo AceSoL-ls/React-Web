@@ -1,126 +1,149 @@
-:root {
-  --bg-dark: #121214;
-  --card-bg: #1a1a1e;
-  --text-main: #ffffff;
-  --accent-gold: #ffb800;
+/* ==========================================================================
+   1. GLOBAL & DASHBOARD LAYOUT
+   ========================================================================== */
+
+* {
+  box-sizing: border-box;
 }
 
 body {
-  background-color: var(--bg-dark);
-  color: var(--text-main);
-  font-family: 'Segoe UI', sans-serif;
   margin: 0;
+  font-family: 'Segoe UI', Roboto, sans-serif;
+  background-color: #0f0f11;
+  color: #f4f4f5;
+}
+
+#root {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  display: block;
+  text-align: left;
+}
+
+.dashboard-container {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
   padding: 40px 20px;
 }
 
 .dashboard-title {
   text-align: center;
-  color: #ffb800;
   font-size: 2.5rem;
-  margin-bottom: 40px;
+  color: #ffffff;
+  margin-bottom: 10px;
+  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
 }
 
-.dashboard-container {
-  max-width: 1200px;
-  margin: 0 auto;
-  text-align: center;
-}
-
-.dashboard-title {
-  text-align: center;
-  font-size: 2.5rem;
-  margin-bottom: 40px;
-  margin-top: 0;
-  color: var(--accent-gold);
-}
-
-/* Flexbox / Grid magic to align them neatly side-by-side */
+/* THE GRID: Holds your player cards neatly */
 .player-grid {
-  display: flex;
-  gap: 24px;
-  justify-content: center;
-  flex-wrap: wrap;
-  max-width: 1200px;
-  margin: 0 auto;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 25px;
+  padding: 20px 0;
+  width: 100%;
 }
+
+/* ==========================================================================
+   2. PLAYER CARD DESIGN
+   ========================================================================== */
 
 .player-card {
-  background-color: #1a1a1e;
-  border: 2px solid #29292e;
+  background: #16161a;
+  border: 1px solid #27272a;
   border-radius: 12px;
-  width: 280px;
   padding: 24px;
   text-align: center;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
   transition: transform 0.2s, border-color 0.2s;
 }
 
 .player-card:hover {
   transform: translateY(-5px);
-  border-color: var(--accent-gold);
+  border-color: #ffb800;
 }
 
-.player-image {
+.player-avatar {
   width: 100px;
   height: 100px;
   border-radius: 50%;
   object-fit: cover;
-  border: 3px solid var(--accent-gold);
+  border: 3px solid #ffb800;
+  margin-bottom: 16px;
+  background-color: #202024;
+}
+
+.player-name {
+  margin: 0 0 4px 0;
+  font-size: 1.4rem;
+  color: #fff;
+}
+
+.player-game {
+  margin: 0 0 16px 0;
+  color: #a1a1aa;
+  font-size: 0.95rem;
 }
 
 .player-stats {
-  text-align: left;
-  margin: 20px 0;
-  background: #202024;
-  padding: 12px;
-  border-radius: 8px;
-}
-
-.player-input{
-  width: 25%;
-  padding: 6px;
-  margin: 10px 0;
-  color: hsl(0, 0%, 0%);
-  background: hsl(0, 30%, 95%);
-  border: 2px solid hsl(0, 0%, 80%);
-  border-radius: 4px;
-  border-color: hsl(0, 0%, 80%);
-}
-
-.player-stats p {
-  margin: 8px 0;
-}
-
-.player-actions {
   display: flex;
-  gap: 8px;
+  justify-content: space-around;
+  background: #202024;
+  padding: 10px;
+  border-radius: 8px;
+  margin-bottom: 20px;
+  font-size: 0.9rem;
+  font-weight: bold;
 }
 
-/* Modal Styles */
-/* Open Modal Action Button Styling */
+/* Like Button inside the card */
+.btn-like {
+  background-color: #27272a;
+  color: #fff;
+  border: 1px solid #3f3f46;
+  padding: 10px 20px;
+  border-radius: 20px;
+  cursor: pointer;
+  font-weight: 600;
+  width: 100%;
+  transition: all 0.2s;
+}
+
+.btn-like:hover {
+  background-color: #f43f5e;
+  border-color: #f43f5e;
+  box-shadow: 0 0 12px rgba(244, 63, 94, 0.4);
+}
+
+/* ==========================================================================
+   3. MODAL & INTERACTIVE BUTTONS
+   ========================================================================== */
+
 .btn-open-modal {
   background: linear-gradient(135deg, #ffb800 0%, #ff9900 100%);
   color: #121214;
-  margin: 15px auto;
   font-size: 1.1rem;
+  font-weight: bold;
   padding: 14px 28px;
+  border: none;
   border-radius: 30px;
+  cursor: pointer;
   box-shadow: 0 4px 15px rgba(255, 184, 0, 0.3);
   transition: transform 0.2s;
 }
 
 .btn-open-modal:hover {
-  background: #ffb800;
   transform: scale(1.05);
 }
 
-/* Modal Overlay: Darkened Blurred Backdrop */
 .modal-overlay {
   position: fixed;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
-  background-color: rgba(0, 0, 0, 0.75);
+  background-color: rgba(0, 0, 0, 0.8);
   backdrop-filter: blur(4px);
   display: flex;
   justify-content: center;
@@ -128,14 +151,14 @@ body {
   z-index: 1000;
 }
 
-/* Modal Core Content Window */
 .modal-content {
-  background-color: #1a1a1e;
+  background-color: #16161a;
   border: 2px solid #ffb800;
   border-radius: 16px;
   padding: 30px;
-  width: 400px;
-  box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+  width: 100%;
+  max-width: 400px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
 }
 
 .modal-content h2 {
@@ -145,11 +168,11 @@ body {
   text-align: center;
 }
 
-/* Form Styling Blocks */
 .form-group {
   display: flex;
   flex-direction: column;
   margin-bottom: 16px;
+  text-align: left;
 }
 
 .form-group-row {
@@ -170,7 +193,7 @@ label {
 
 input {
   background-color: #202024;
-  border: 1px solid #3e3e46;
+  border: 1px solid #3f3f46;
   padding: 10px 14px;
   border-radius: 6px;
   color: white;
@@ -182,44 +205,28 @@ input:focus {
   border-color: #ffb800;
 }
 
-/* Modal Buttons Panel */
 .modal-actions {
   display: flex;
   gap: 12px;
   margin-top: 24px;
 }
 
+.modal-actions button {
+  flex: 1;
+  padding: 12px;
+  border: none;
+  border-radius: 8px;
+  font-weight: bold;
+  cursor: pointer;
+  font-size: 1rem;
+}
+
 .btn-cancel {
-  background-color: #29292e;
+  background-color: #27272a;
+  color: white;
 }
 
 .btn-submit-player {
   background-color: #ffb800;
   color: #121214;
-}
-
-button {
-  background: #29292e;
-  color: white;
-  border: none;
-  padding: 10px 16px;
-  border-radius: 6px;
-  font-weight: bold;
-  cursor: pointer;
-  flex: 1;
-}
-
-button:hover {
-  background: hwb(0 8% 56%);
-}
-
-.btn-reset {
-  background: #cc2929;
-}
-.btn-reset:hover {
-  background: hwb(0 8% 56%);
-}
-
-.btn-newPlayer {
-  background: #e53939;
 }

@@ -12,7 +12,7 @@ function AddPlayerForm({onAddPlayer, onClose}) {
   if (playerName.trim() === "")
    return;
  
-  onAddPlayer(playerName, playerGame, playerGold, playerLevel);
+  onAddPlayer(playerName, playerGame, playerLevel, playerGold);
  }
 
 return (
