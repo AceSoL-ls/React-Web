@@ -94,6 +94,108 @@ body {
   gap: 8px;
 }
 
+/* Modal Styles */
+/* Open Modal Action Button Styling */
+.btn-open-modal {
+  background: linear-gradient(135deg, #ffb800 0%, #ff9900 100%);
+  color: #121214;
+  font-size: 1.1rem;
+  padding: 14px 28px;
+  border-radius: 30px;
+  box-shadow: 0 4px 15px rgba(255, 184, 0, 0.3);
+  transition: transform 0.2s;
+}
+
+.btn-open-modal:hover {
+  background: #ffb800;
+  transform: scale(1.05);
+}
+
+/* Modal Overlay: Darkened Blurred Backdrop */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.75);
+  backdrop-filter: blur(4px);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+/* Modal Core Content Window */
+.modal-content {
+  background-color: #1a1a1e;
+  border: 2px solid #ffb800;
+  border-radius: 16px;
+  padding: 30px;
+  width: 400px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+}
+
+.modal-content h2 {
+  color: #ffb800;
+  margin-top: 0;
+  margin-bottom: 24px;
+  text-align: center;
+}
+
+/* Form Styling Blocks */
+.form-group {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 16px;
+}
+
+.form-group-row {
+  display: flex;
+  gap: 16px;
+}
+
+.form-group-row .form-group {
+  flex: 1;
+}
+
+label {
+  font-size: 0.85rem;
+  color: #a1a1aa;
+  margin-bottom: 6px;
+  font-weight: bold;
+}
+
+input {
+  background-color: #202024;
+  border: 1px solid #3e3e46;
+  padding: 10px 14px;
+  border-radius: 6px;
+  color: white;
+  font-size: 1rem;
+}
+
+input:focus {
+  outline: none;
+  border-color: #ffb800;
+}
+
+/* Modal Buttons Panel */
+.modal-actions {
+  display: flex;
+  gap: 12px;
+  margin-top: 24px;
+}
+
+.btn-cancel {
+  background-color: #29292e;
+}
+
+.btn-submit-player {
+  background-color: #ffb800;
+  color: #121214;
+}
+
 button {
   background: #29292e;
   color: white;

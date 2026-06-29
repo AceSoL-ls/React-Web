@@ -38,16 +38,19 @@ function App(){
   }
 ]);
 
-function addNewPlayer(nameFromChild){
+const [isModalOpen, setIsModalOpen] = useState(false);
+
+function addNewPlayer(nameFromChild,game,gold,level){
   const newPlayerObj = {
     id: Date.now(),
     name: nameFromChild,
-    game: "Unknown",
-    level: "1",
-    gold: "0",
+    game: game || "Unknown",
+    level: level || "1",
+    gold: gold || "0",
     image: mariaPic
   };
   setPlayers(prevPlayers => [...prevPlayers, newPlayerObj]);
+  setIsModalOpen(false);
 }
 
  return(
@@ -55,6 +58,20 @@ function addNewPlayer(nameFromChild){
    <h1 className="dashboard-title">Leaderboard Lab ⚔️</h1>
 
    <AddPlayerForm onAddPlayer={addNewPlayer} />
+
+   <div>
+    <button className="btn-open-modal" onClick={() => setIsModalOpen(true)}>
+     Add New Player
+    </button>
+   </div>
+
+   {/* Conditional Rendering If modal is true */}
+   {isModalOpen && (
+    <AddPlayerForm 
+    onAddPlayer={addNewPlayer}
+    onClose={() => setIsModalOpen(false)} 
+    />
+   )}
 
    <div className="player-grid">
       {players.map((player) => (
