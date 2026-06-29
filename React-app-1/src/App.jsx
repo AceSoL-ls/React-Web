@@ -57,8 +57,6 @@ function addNewPlayer(nameFromChild,game,gold,level){
   <div className="dashboard-container">
    <h1 className="dashboard-title">Leaderboard Lab ⚔️</h1>
 
-   <AddPlayerForm onAddPlayer={addNewPlayer} />
-
    <div>
     <button className="btn-open-modal" onClick={() => setIsModalOpen(true)}>
      Add New Player
