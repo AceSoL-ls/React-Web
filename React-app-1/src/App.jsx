@@ -19,7 +19,7 @@ function App() {
 
   // Fetch players on page load
   useEffect(() => {
-    fetch('http://localhost:5000/api/players')
+    fetch('/api/players')
       .then(response => response.json())
       .then(data => setPlayers(data))
       .catch(err => console.error("Error fetching players:", err));
@@ -27,7 +27,7 @@ function App() {
 
   // Save new player to database
   function addNewPlayer(name, game, level, gold) {
-    fetch('http://localhost:5000/api/players', {
+    fetch('/api/players', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ name, game, level, gold }) // Ensure order is uniform
@@ -42,7 +42,7 @@ function App() {
 
   // Like player inside database
   function handleLikePlayer(id) {
-    fetch(`http://localhost:5000/api/players/${id}/like`, {
+    fetch(`/api/players/${id}/like`, {
       method: 'POST'
     })
     .then(response => response.json())

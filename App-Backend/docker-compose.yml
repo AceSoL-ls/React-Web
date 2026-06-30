@@ -1,6 +1,7 @@
 version: '3.8'
 
 services:
+  # 1. Η ΒΑΣΗ ΔΕΔΟΜΕΝΩΝ (Postgres)
   leaderboard-db:
     image: postgres:15-alpine
     container_name: gamer_postgres_db
@@ -12,6 +13,32 @@ services:
       - "5432:5432"
     volumes:
       - pgdata:/var/lib/postgresql/data
+
+  # 2. ΤΟ BACKEND (Node.js) - Τρέχει πλέον κι αυτό στο Docker!
+  leaderboard-backend:
+    image: node:18-alpine
+    container_name: gamer_node_backend
+    working_dir: /app
+    volumes:
+      - .:/app
+    command: node server.js
+    depends_on:
+      - leaderboard-db
+    # ΠΡΟΣΕΞΕ: Δεν βάζουμε "ports:" εδώ! Το backend είναι κρυμμένο από το ίντερνετ.
+
+  # 3. Ο ΤΡΟΧΟΝΟΜΟΣ (Nginx) - Η μόνη ανοιχτή πύλη στο PC σου!
+  leaderboard-nginx:
+    image: nginx:alpine
+    container_name: gamer_nginx_proxy
+    ports:
+      - "80:80" # Ανοίγουμε το Port 80 για τον browser σου
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf:ro
+      - ../dist:/usr/share/nginx/html:ro # Ανεβάζει τα έτοιμα αρχεία της React στον Nginx
+    depends_on:
+      - leaderboard-backend
+    environment:
+      - NODE_ENV=production
 
 volumes:
   pgdata:

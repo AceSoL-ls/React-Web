@@ -6,7 +6,6 @@ const { Pool } = pg;
 const app = express();
 const PORT = 5000;
 
-app.use(cors());
 app.use(express.json());
 
 // 1. LINK TO DOCKER DATABASE USING YOUR CREDENTIALS
