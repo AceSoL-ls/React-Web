@@ -54,6 +54,22 @@ function App() {
     .catch(err => console.error("Error updating likes:", err));
   }
 
+  const handleDeletePlayer = (id) => {
+  // 1. Στέλνουμε το αίτημα διαγραφής στο backend (χρησιμοποιώντας το relative path)
+  fetch(`/api/players/${id}`, {
+    method: 'DELETE',
+  })
+  .then(response => {
+    if (response.ok) {
+      // 2. Αν το backend πει "OK", σβήνουμε τον παίκτη από το state της React
+      setPlayers(players.filter(player => player.id !== id));
+    } else {
+      alert("Κάτι πήγε στραβά με τη διαγραφή.");
+    }
+  })
+  .catch(error => console.error("Error deleting player:", error));
+};
+
   return (
     <div className="dashboard-container">
       <h1 className="dashboard-title">Gamer Leaderboard ⚔️</h1>
@@ -84,7 +100,8 @@ function App() {
             gold={player.gold} 
             likes={player.likes} 
             image={getPlayerImage(player.name)} 
-            onLike={() => handleLikePlayer(player.id)} 
+            onLike={() => handleLikePlayer(player.id)}
+            onDelete={() => handleDeletePlayer(player.id)}
           />
         ))}
       </div>

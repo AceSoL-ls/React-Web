@@ -110,7 +110,26 @@ body {
   transition: all 0.2s;
 }
 
+.btn-delete {
+  background-color: #3f3f46;
+  color: #fff;
+  border: 1px solid #27272a;
+  padding: 10px 20px;
+  border-radius: 20px;
+  cursor: pointer;
+  font-weight: 600;
+  width: 100%;
+  margin-top: 10px;
+  transition: all 0.2s;
+}
+
 .btn-like:hover {
+  background-color: #f43f5e;
+  border-color: #f43f5e;
+  box-shadow: 0 0 12px rgba(244, 63, 94, 0.4);
+}
+
+.btn-delete:hover {
   background-color: #f43f5e;
   border-color: #f43f5e;
   box-shadow: 0 0 12px rgba(244, 63, 94, 0.4);

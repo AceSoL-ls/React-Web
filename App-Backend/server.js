@@ -76,3 +76,21 @@ app.post('/api/players/:id/like', async (req, res) => {
 app.listen(PORT, () => {
   console.log(`🚀 Full-Stack API Engine humming on http://localhost:${PORT}`);
 });
+
+// 🗑️ ΔΙΑΓΡΑΦΗ ΠΑΙΚΤΗ
+app.delete('/api/players/:id', async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    const result = await pool.query('DELETE FROM players WHERE id = $1', [id]);
+
+    if (result.rowCount === 0) {
+      return res.status(404).json({ error: "Ο παίκτης δεν βρέθηκε" });
+    }
+
+    res.json({ message: "Ο παίκτης διαγράφηκε με επιτυχία!" });
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).json({ error: "Σφάλμα κατά τη διαγραφή από τη βάση" });
+  }
+});

@@ -1,5 +1,5 @@
 // Notice we accept 'likes' and 'onLike' as parameters coming from the parent!
-function PlayerCard({ name, game, level, gold, image, likes, onLike }) {
+function PlayerCard({ name, game, level, gold, image, likes, onLike, onDelete }) {
   return (
     <div className="player-card">
       <img src={image} alt={name} className="player-avatar" />
@@ -15,6 +15,11 @@ function PlayerCard({ name, game, level, gold, image, likes, onLike }) {
       <button className="btn-like" onClick={onLike}>
         ❤️ Likes: {likes || 0}
       </button>
+
+      <button className="btn-delete" onClick={onDelete}>
+        🗑️ Delete
+      </button>
+
     </div>
   );
 }
