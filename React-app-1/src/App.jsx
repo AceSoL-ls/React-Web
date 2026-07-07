@@ -8,7 +8,8 @@ import johnPic from './assets/John.png';
 
 function App() {
   const [players, setPlayers] = useState([]);
-  const [isModalOpen, setIsModalOpen] = useState(false); // Your V2.2 switch!
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
 
   const getPlayerImage = (name) => {
     if (name === "Nick") return nickPic;
@@ -70,9 +71,24 @@ function App() {
   .catch(error => console.error("Error deleting player:", error));
 };
 
+const filteredPlayers = players.filter((player) => {
+  // Μετατρέπουμε τα πάντα σε μικρά (lowercase) για να μην έχει σημασία αν γράψεις "NICK" ή "nick"
+  return player.name.toLowerCase().includes(searchQuery.toLowerCase());
+});
+
   return (
     <div className="dashboard-container">
       <h1 className="dashboard-title">Gamer Leaderboard ⚔️</h1>
+
+      <div className="search-bar">
+        <input 
+          type="text" 
+          placeholder="Search players..." 
+          value={searchQuery} 
+          onChange={(e) => setSearchQuery(e.target.value)}
+          style={{ padding: '10px', width: '100%', maxWidth: '300px', borderRadius: '5px' }} 
+        />
+      </div>
       
       {/* ➕ Modal Action Button */}
       <div style={{ textAlign: 'center', marginBottom: '35px' }}>
@@ -91,7 +107,7 @@ function App() {
 
       {/* 🕸️ THE GRID LAYOUT: Wraps all components securely */}
       <div className="player-grid">
-        {players.map((player) => (
+        {filteredPlayers.map((player) => (
           <PlayerCard 
             key={player.id} 
             name={player.name} 

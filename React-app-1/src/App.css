@@ -249,3 +249,10 @@ input:focus {
   background-color: #ffb800;
   color: #121214;
 }
+
+.search-bar {
+  margin-bottom: 17px;
+  text-align: right;
+
+
+}
