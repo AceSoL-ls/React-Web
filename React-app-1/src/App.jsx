@@ -10,7 +10,9 @@ import johnPic from './assets/John.png';
 function App() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
-  const { players, setPlayers } = usePlayers(); 
+  
+  // 🔽 1. Τραβάμε τα πάντα από το Hook (Παίκτες + Όλα τα Fetches!)
+  const { players, addNewPlayer, handleLikePlayer, handleDeletePlayer } = usePlayers(); 
 
   const getPlayerImage = (name) => {
     if (name === "Nick") return nickPic;
@@ -19,55 +21,16 @@ function App() {
     return mariaPic; 
   };
 
-  // Save new player to database
-  function addNewPlayer(name, game, level, gold) {
-    fetch('/api/players', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ name, game, level, gold }) // Ensure order is uniform
-    })
-    .then(response => response.json())
-    .then(newPlayerFromDb => {
-      setPlayers(prevPlayers => [...prevPlayers, newPlayerFromDb]);
-      setIsModalOpen(false); // Close modal cleanly
-    })
-    .catch(err => console.error("Error saving player:", err));
-  }
+  // 🔽 2. Η συνάρτηση που καλεί το hook και κλείνει το modal
+  const handleCreatePlayer = (name, game, level, gold) => {
+    addNewPlayer(name, game, level, gold).then((success) => {
+      if (success) setIsModalOpen(false); // Κλείνει το modal μόνο αν πετύχει το save
+    });
+  };
 
-  // Like player inside database
-  function handleLikePlayer(id) {
-    fetch(`/api/players/${id}/like`, {
-      method: 'POST'
-    })
-    .then(response => response.json())
-    .then(updatedPlayer => {
-      setPlayers(prevPlayers => 
-        prevPlayers.map(p => p.id === id ? updatedPlayer : p)
-      );
-    })
-    .catch(err => console.error("Error updating likes:", err));
-  }
-
-  const handleDeletePlayer = (id) => {
-  // 1. Στέλνουμε το αίτημα διαγραφής στο backend (χρησιμοποιώντας το relative path)
-  fetch(`/api/players/${id}`, {
-    method: 'DELETE',
-  })
-  .then(response => {
-    if (response.ok) {
-      // 2. Αν το backend πει "OK", σβήνουμε τον παίκτη από το state της React
-      setPlayers(players.filter(player => player.id !== id));
-    } else {
-      alert("Κάτι πήγε στραβά με τη διαγραφή.");
-    }
-  })
-  .catch(error => console.error("Error deleting player:", error));
-};
-
-const filteredPlayers = players.filter((player) => {
-  // Μετατρέπουμε τα πάντα σε μικρά (lowercase) για να μην έχει σημασία αν γράψεις "NICK" ή "nick"
-  return player.name.toLowerCase().includes(searchQuery.toLowerCase());
-});
+  const filteredPlayers = players.filter((player) => {
+    return player.name.toLowerCase().includes(searchQuery.toLowerCase());
+  });
 
   return (
     <div className="dashboard-container">
@@ -93,12 +56,12 @@ const filteredPlayers = players.filter((player) => {
       {/* 🖥️ Conditional Rendering Modal */}
       {isModalOpen && (
         <AddPlayerForm 
-          onAddPlayer={addNewPlayer} 
+          onAddPlayer={handleCreatePlayer} // 👈 Χρησιμοποιεί τη νέα handle συνάρτηση
           onClose={() => setIsModalOpen(false)} 
         />
       )}
 
-      {/* 🕸️ THE GRID LAYOUT: Wraps all components securely */}
+      {/* 🕸️ THE GRID LAYOUT */}
       <div className="player-grid">
         {filteredPlayers.map((player) => (
           <PlayerCard 
@@ -109,8 +72,8 @@ const filteredPlayers = players.filter((player) => {
             gold={player.gold} 
             likes={player.likes} 
             image={getPlayerImage(player.name)} 
-            onLike={() => handleLikePlayer(player.id)}
-            onDelete={() => handleDeletePlayer(player.id)}
+            onLike={() => handleLikePlayer(player.id)} // 👈 ΤΩΡΑ ΔΟΥΛΕΥΕΙ!
+            onDelete={() => handleDeletePlayer(player.id)} // 👈 ΤΩΡΑ ΔΟΥΛΕΥΕΙ!
           />
         ))}
       </div>
