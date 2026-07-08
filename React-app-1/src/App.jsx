@@ -1,3 +1,4 @@
+// 📁 Αρχείο: React-app-1/src/App.jsx
 import { useState } from 'react';
 import { usePlayers } from './usePlayers';
 import './App.css';
@@ -11,7 +12,7 @@ function App() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   
-  // 🔽 1. Τραβάμε τα πάντα από το Hook (Παίκτες + Όλα τα Fetches!)
+  // Παίρνουμε τα πάντα σωστά από το hook μας
   const { players, addNewPlayer, handleLikePlayer, handleDeletePlayer } = usePlayers(); 
 
   const getPlayerImage = (name) => {
@@ -19,13 +20,6 @@ function App() {
     if (name === "Maria") return mariaPic;
     if (name === "John") return johnPic;
     return mariaPic; 
-  };
-
-  // 🔽 2. Η συνάρτηση που καλεί το hook και κλείνει το modal
-  const handleCreatePlayer = (name, game, level, gold) => {
-    addNewPlayer(name, game, level, gold).then((success) => {
-      if (success) setIsModalOpen(false); // Κλείνει το modal μόνο αν πετύχει το save
-    });
   };
 
   const filteredPlayers = players.filter((player) => {
@@ -56,7 +50,10 @@ function App() {
       {/* 🖥️ Conditional Rendering Modal */}
       {isModalOpen && (
         <AddPlayerForm 
-          onAddPlayer={handleCreatePlayer} // 👈 Χρησιμοποιεί τη νέα handle συνάρτηση
+          // 🔽 ΕΔΩ: Του δίνουμε τα δεδομένα και μια συνάρτηση να κλείνει το modal στο καπάκι
+          onAddPlayer={(name, game, level, gold) => {
+            addNewPlayer(name, game, level, gold, () => setIsModalOpen(false));
+          }} 
           onClose={() => setIsModalOpen(false)} 
         />
       )}
@@ -72,8 +69,8 @@ function App() {
             gold={player.gold} 
             likes={player.likes} 
             image={getPlayerImage(player.name)} 
-            onLike={() => handleLikePlayer(player.id)} // 👈 ΤΩΡΑ ΔΟΥΛΕΥΕΙ!
-            onDelete={() => handleDeletePlayer(player.id)} // 👈 ΤΩΡΑ ΔΟΥΛΕΥΕΙ!
+            onLike={() => handleLikePlayer(player.id)}
+            onDelete={() => handleDeletePlayer(player.id)}
           />
         ))}
       </div>

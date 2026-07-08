@@ -13,8 +13,8 @@ export function usePlayers() {
   }, []);
 
   // 2. POST - Προσθήκη νέου παίκτη
-  const addNewPlayer = (name, game, level, gold) => {
-    return fetch('/api/players', {
+  const addNewPlayer = (name, game, level, gold, onSuccess) => {
+    fetch('/api/players', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ name, game, level, gold })
@@ -22,22 +22,14 @@ export function usePlayers() {
     .then(response => response.json())
     .then(newPlayerFromDb => {
       setPlayers(prevPlayers => [...prevPlayers, newPlayerFromDb]);
-      return true; // Επιστρέφουμε true για να ξέρει το App ότι πέτυχε και να κλείσει το modal
+      if (onSuccess) onSuccess(); // 👈 Αν όλα πήγαν καλά, εκτελείται η εντολή για να κλείσει το modal!
     })
-    .catch(err => {
-      console.error("Error saving player:", err);
-      return false;
-    });
+    .catch(err => console.error("Error saving player:", err));
   };
 
   // 3. PUT - Like
   const handleLikePlayer = (id) => {
-    fetch(`/api/players/${id}/like`, { method: 'PUT' })
-      .then((res) => {
-        if (res.ok) {
-          setPlayers(players.map(p => p.id === id ? { ...p, likes: p.likes + 1 } : p));
-        }
-      });
+   setPlayers(players.map(p => p.id === id ? { ...p, likes: (p.likes || 0) + 1 } : p));
   };
 
   // 4. DELETE - Διαγραφή
@@ -46,13 +38,11 @@ export function usePlayers() {
       .then((res) => {
         if (res.ok) {
           setPlayers(players.filter(p => p.id !== id));
-        } else {
-          alert("Κάτι πήγε στραβά με τη διαγραφή.");
         }
       });
   };
 
-  // Στέλνουμε ΟΛΑ τα εργαλεία στο κουτί
+  // 🚨 ΠΡΟΣΟΧΗ: Ελέγχουμε ότι επιστρέφουμε και τα 4 εργαλεία!
   return {
     players,
     addNewPlayer,
