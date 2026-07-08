@@ -1,4 +1,5 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
+import { usePlayers } from './usePlayers';
 import './App.css';
 import PlayerCard from './PlayerCard';
 import AddPlayerForm from './AddPlayerForm';
@@ -7,9 +8,9 @@ import mariaPic from './assets/Maria.jpg';
 import johnPic from './assets/John.png';
 
 function App() {
-  const [players, setPlayers] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
+  const { players, setPlayers } = usePlayers(); 
 
   const getPlayerImage = (name) => {
     if (name === "Nick") return nickPic;
@@ -17,14 +18,6 @@ function App() {
     if (name === "John") return johnPic;
     return mariaPic; 
   };
-
-  // Fetch players on page load
-  useEffect(() => {
-    fetch('/api/players')
-      .then(response => response.json())
-      .then(data => setPlayers(data))
-      .catch(err => console.error("Error fetching players:", err));
-  }, []);
 
   // Save new player to database
   function addNewPlayer(name, game, level, gold) {
