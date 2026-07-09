@@ -1,7 +1,7 @@
-// 📁 Αρχείο: React-app-1/src/App.jsx
+import './App.css';
 import { useState } from 'react';
 import { usePlayers } from './usePlayers';
-import './App.css';
+import LoginForm from './LoginForm';
 import PlayerCard from './PlayerCard';
 import AddPlayerForm from './AddPlayerForm';
 import nickPic from './assets/Nick.jpg';
@@ -9,6 +9,9 @@ import mariaPic from './assets/Maria.jpg';
 import johnPic from './assets/John.png';
 
 function App() {
+
+  const [token, setToken] = useState(localStorage.getItem('token'));
+
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   
@@ -22,12 +25,30 @@ function App() {
     return mariaPic; 
   };
 
+  if (!token) {
+    return <LoginForm onLoginSuccess={() => setToken(localStorage.getItem('token'))} />;
+  }
+
+
   const filteredPlayers = players.filter((player) => {
     return player.name.toLowerCase().includes(searchQuery.toLowerCase());
   });
 
   return (
     <div className="dashboard-container">
+      {/* Κουμπί Logout στην κορυφή */}
+      <div style={{ textAlign: 'right', padding: '10px' }}>
+        <button 
+          onClick={() => {
+            localStorage.removeItem('token'); // Σβήσιμο από τον browser
+            setToken(null); // Ενημέρωση της React
+          }}
+          style={{ background: '#f44336', color: 'white', border: 'none', padding: '8px 12px', borderRadius: '4px', cursor: 'pointer' }}
+        >
+          Logout 🚪
+        </button>
+      </div>
+      
       <h1 className="dashboard-title">Gamer Leaderboard ⚔️</h1>
 
       <div className="search-bar">
