@@ -2,10 +2,11 @@
 import { useState } from 'react';
 
 export default function LoginForm({ onLoginSuccess }) {
-  const [isRegistering, setIsRegistering] = useState(false); // 👈 State για να ξέρουμε ποιο view δείχνουμε
+  const [isRegistering, setIsRegistering] = useState(false);
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
-  const [message, setMessage] = useState(''); // Για μηνύματα επιτυχίας (π.χ. "Η εγγραφή πέτυχε!")
+  const [showPassword, setShowPassword] = useState(false); // 👈 State για την εμφάνιση του κωδικού
+  const [message, setMessage] = useState('');
   const [error, setError] = useState('');
 
   const handleSubmit = (e) => {
@@ -13,7 +14,6 @@ export default function LoginForm({ onLoginSuccess }) {
     setError('');
     setMessage('');
 
-    // Καθορίζουμε το URL και το τι περιμένουμε ανάλογα με το αν κάνουμε Login ή Register
     const endpoint = isRegistering ? '/api/auth/register' : '/api/auth/login';
 
     fetch(endpoint, {
@@ -29,14 +29,13 @@ export default function LoginForm({ onLoginSuccess }) {
     })
     .then(data => {
       if (isRegistering) {
-        // Αν πετύχει το Register
-        setMessage(data.message); // Δείξε το πράσινο μήνυμα επιτυχίας
-        setIsRegistering(false);  // Γύρνα τον χρήστη αυτόματα στη φόρμα του Login
-        setPassword('');          // Καθάρισε το password για ασφάλεια
+        setMessage(data.message);
+        setIsRegistering(false);
+        setPassword('');
+        setShowPassword(false); // Reset το ματάκι μετά την εγγραφή
       } else {
-        // Αν πετύχει το Login
-        localStorage.setItem('token', data.token); // 🎟️ Αποθήκευση του JWT
-        onLoginSuccess(); // Ενημέρωση του App.jsx
+        localStorage.setItem('token', data.token);
+        onLoginSuccess();
       }
     })
     .catch(err => {
@@ -47,7 +46,6 @@ export default function LoginForm({ onLoginSuccess }) {
   return (
     <div className="auth-container">
       <div className="auth-card">
-        {/* Δυναμικός Τίτλος ανάλογα με το State */}
         <h2>{isRegistering ? 'Δημιουργία Λογαριασμού 📝' : 'Είσοδος 🔐'}</h2>
         
         {error && <p className="auth-error">{error}</p>}
@@ -67,13 +65,28 @@ export default function LoginForm({ onLoginSuccess }) {
           
           <div className="auth-form-group">
             <label>Password:</label>
-            <input 
-              type="password" 
-              value={password} 
-              onChange={(e) => setPassword(e.target.value)} 
-              required 
-              className="auth-input"
-            />
+            {/* 🔽 ΕΔΩ: Ένα container που κρατάει το input και το κουμπί μαζί */}
+            <div className="password-input-wrapper">
+              <input 
+                // 🔽 Αλλάζει δυναμικά από password σε text
+                type={isRegistering && showPassword ? 'text' : 'password'} 
+                value={password} 
+                onChange={(e) => setPassword(e.target.value)} 
+                required 
+                className="auth-input password-field"
+              />
+              
+              {/* 👁️ Το κουμπί-ματάκι εμφανίζεται ΜΟΝΟ στο Register */}
+              {isRegistering && (
+                <button 
+                  type="button" 
+                  className="btn-toggle-password"
+                  onClick={() => setShowPassword(!showPassword)}
+                >
+                  {showPassword ? '👁️' : '🙈'}
+                </button>
+              )}
+            </div>
           </div>
           
           <button type="submit" className="btn-auth-submit">
@@ -81,7 +94,6 @@ export default function LoginForm({ onLoginSuccess }) {
           </button>
         </form>
 
-        {/* Κουμπί εναλλαγής μεταξύ Login και Register */}
         <div className="auth-toggle-zone">
           <button 
             className="btn-auth-toggle" 
@@ -89,6 +101,7 @@ export default function LoginForm({ onLoginSuccess }) {
               setIsRegistering(!isRegistering);
               setError('');
               setMessage('');
+              setShowPassword(false); // Reset όταν αλλάζεις οθόνες
             }}
           >
             {isRegistering 

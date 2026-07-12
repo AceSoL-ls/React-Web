@@ -418,3 +418,31 @@ input:focus {
 .btn-auth-toggle:hover {
   color: #ffb800;
 }
+
+/* Ευθυγράμμιση για το Password Wrapper */
+.password-input-wrapper {
+  position: relative;
+  display: flex;
+  width: 100%;
+}
+
+.password-field {
+  width: 100%;
+  padding-right: 45px; /* Αφήνει χώρο στα δεξιά για να μην πατάει το κείμενο πάνω στο emoji */
+}
+
+.btn-toggle-password {
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 1.1rem;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  user-select: none;
+}

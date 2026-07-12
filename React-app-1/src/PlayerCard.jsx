@@ -1,27 +1,23 @@
-// Notice we accept 'likes' and 'onLike' as parameters coming from the parent!
-function PlayerCard({ name, game, level, gold, image, likes, onLike, onDelete }) {
+// 📁 Αρχείο: PlayerCard.jsx
+export default function PlayerCard({ name, game, level, gold, likes, image, onLike, onDelete, userRole }) {
   return (
     <div className="player-card">
       <img src={image} alt={name} className="player-avatar" />
-      <h2 className="player-name">{name}</h2>
-      <p className="player-game">🎮 {game}</p>
+      <h3 className="player-name">{name}</h3>
+      <p className="player-game">{game}</p>
       
       <div className="player-stats">
-        <span>⭐ Lvl: {level}</span>
-        <span>🪙 Gold: {gold}</span>
+        <span>📊 Lvl: {level}</span>
+        <span>💰 Gold: {gold}</span>
+        <span>❤️ Likes: {likes}</span>
       </div>
 
-      {/* Display database likes, and fire the parent network action on click */}
-      <button className="btn-like" onClick={onLike}>
-        ❤️ Likes: {likes || 0}
-      </button>
-
-      <button className="btn-delete" onClick={onDelete}>
-        🗑️ Delete
-      </button>
-
+      <button className="btn-like" onClick={onLike}>Like 👍</button>
+      
+      {/* ❌ ΕΜΦΑΝΙΣΗ DELETE ΜΟΝΟ ΑΝ ΕΙΝΑΙ ADMIN */}
+      {userRole === 'Admin' && (
+        <button className="btn-delete" onClick={onDelete}>Delete 🗑️</button>
+      )}
     </div>
   );
 }
-
-export default PlayerCard;

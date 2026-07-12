@@ -72,11 +72,13 @@ function App() {
         />
       </div>
       
-      <div className="action-bar">
-        <button className="btn-open-modal" onClick={() => setIsModalOpen(true)}>
-          ➕ Create New Challenger
-        </button>
-      </div>
+      {currentUser.role === 'Admin' && (
+        <div className="action-bar">
+          <button className="btn-open-modal" onClick={() => setIsModalOpen(true)}>
+            ➕ Create New Challenger
+          </button>
+        </div>
+      )}
 
       {/* Conditional Rendering Modal */}
       {isModalOpen && (
@@ -101,6 +103,7 @@ function App() {
             image={getPlayerImage(player.name)} 
             onLike={() => handleLikePlayer(player.id)}
             onDelete={() => handleDeletePlayer(player.id)}
+            userRole={currentUser.role}
           />
         ))}
       </div>

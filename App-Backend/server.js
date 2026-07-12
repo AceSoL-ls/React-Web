@@ -133,8 +133,11 @@ app.post('/api/auth/register', async (req, res) => {
 
     // 2. Εισαγωγή του νέου χρήστη στη βάση δεδομένων
     // Για χάρη του βήμα-βήμα, ο πρώτος χρήστης που γράφεται (π.χ. Nick) μπορεί να γίνει Admin χειροκίνητα στη βάση, οι υπόλοιποι γίνονται 'User'
+
+    const assignedRole = username.toLowerCase() === 'nick' ? 'Admin' : 'User';
+
     const queryText = 'INSERT INTO users (username, password, role) VALUES ($1, $2, $3) RETURNING id, username, role';
-    const values = [username, password, 'User'];
+    const values = [username, password, assignedRole];
     const result = await pool.query(queryText, values);
 
     return res.json({ 
