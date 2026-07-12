@@ -14,9 +14,12 @@ export default function LoginForm({ onLoginSuccess }) {
     setError('');
     setMessage('');
 
-    const endpoint = isRegistering ? '/api/auth/register' : '/api/auth/login';
+    const baseUrl = "https://react-web-aoqq.onrender.com";
+    const endpoint = isRegistering 
+    ? `${baseUrl}/api/auth/register` 
+    : `${baseUrl}/api/auth/login`;
 
-    fetch(endpoint, {
+    fetch( endpoint, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ username, password })
