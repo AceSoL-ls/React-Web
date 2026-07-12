@@ -24,7 +24,7 @@ const pool = new Pool({
 
 // 2. AUTOMATIC TABLE CREATOR: Builds the structure if it doesn't exist
 async function initDatabaseTable() {
-  const tableBlueprint = `
+  const playersTable = `
     CREATE TABLE IF NOT EXISTS players (
       id SERIAL PRIMARY KEY,
       name VARCHAR(100) NOT NULL,
@@ -34,13 +34,25 @@ async function initDatabaseTable() {
       likes INT DEFAULT 0
     );
   `;
+
+  const usersTable = `
+    CREATE TABLE IF NOT EXISTS users (
+      id SERIAL PRIMARY KEY,
+      username VARCHAR(50) UNIQUE NOT NULL,
+      password VARCHAR(100) NOT NULL,
+      role VARCHAR(20) DEFAULT 'User'
+    );
+  `;
+
   try {
-    await pool.query(tableBlueprint);
-    console.log("✅ Database 'players' table verified and ready.");
+    await pool.query(playersTable);
+    await pool.query(usersTable); // 👈 Εκτέλεση του νέου blueprint
+    console.log("✅ Database tables verified and ready.");
   } catch (err) {
-    console.error("❌ Error generating database table:", err);
+    console.error("❌ Error generating database tables:", err);
   }
 }
+
 initDatabaseTable();
 
 // 🛡️ MIDDLEWARE: Ο πορτιέρης που ελέγχει αν το JWT είναι έγκυρο και ο χρήστης Admin
@@ -66,23 +78,75 @@ const verifyAdmin = (req, res, next) => {
   });
 };
 
-// 🔐 ROUTE: Login Χρήστη & Έκδοση JWT
-app.post('/api/auth/login', (req, res) => {
+// 🔐 ROUTE: Login Χρήστη (Δυναμικό από τη βάση)
+app.post('/api/auth/login', async (req, res) => {
   const { username, password } = req.body;
 
-  if (username === "Nick" && password === "123456") {
+  try {
+    // 1. Αναζήτηση του χρήστη στη βάση δεδομένων
+    const result = await pool.query('SELECT * FROM users WHERE username = $1', [username]);
+    
+    // Αν δεν βρεθεί ο χρήστης
+    if (result.rows.length === 0) {
+      return res.status(401).json({ success: false, message: "Λάθος Username ή Password" });
+    }
+
+    const user = result.rows[0];
+
+    // 2. Έλεγχος αν ο κωδικός ταιριάζει
+    if (user.password !== password) {
+      return res.status(401).json({ success: false, message: "Λάθος Username ή Password" });
+    }
+
+    // 3. Δημιουργία του Payload με τα πραγματικά δεδομένα από τη βάση!
     const userPayload = {
-      username: "Nick",
-      role: "Admin" // 👑 Ρόλος Admin για να περνάει τον πορτιέρη!
+      id: user.id,
+      username: user.username,
+      role: user.role // 👑 Παίρνει τον ρόλο του απευθείας από τη βάση (Admin ή User)
     };
 
-    // Παράγουμε το token με λήξη σε 2 ώρες
+    // 4. Γέννηση του JWT Token
     const token = jwt.sign(userPayload, JWT_SECRET, { expiresIn: '2h' });
 
     return res.json({ success: true, token: token });
+
+  } catch (err) {
+    console.error(err.message);
+    return res.status(500).json({ success: false, message: "Σφάλμα συστήματος κατά το login." });
+  }
+});
+
+// 📝 ROUTE: Εγγραφή Νέου Χρήστη (Register)
+app.post('/api/auth/register', async (req, res) => {
+  const { username, password } = req.body;
+
+  if (!username || !password) {
+    return res.status(400).json({ success: false, message: "Παρακαλώ συμπληρώστε όλα τα πεδία." });
   }
 
-  return res.status(401).json({ success: false, message: "Λάθος Username ή Password" });
+  try {
+    // 1. Έλεγχος αν το username υπάρχει ήδη στη βάση
+    const userCheck = await pool.query('SELECT * FROM users WHERE username = $1', [username]);
+    if (userCheck.rows.length > 0) {
+      return res.status(400).json({ success: false, message: "Το username χρησιμοποιείται ήδη." });
+    }
+
+    // 2. Εισαγωγή του νέου χρήστη στη βάση δεδομένων
+    // Για χάρη του βήμα-βήμα, ο πρώτος χρήστης που γράφεται (π.χ. Nick) μπορεί να γίνει Admin χειροκίνητα στη βάση, οι υπόλοιποι γίνονται 'User'
+    const queryText = 'INSERT INTO users (username, password, role) VALUES ($1, $2, $3) RETURNING id, username, role';
+    const values = [username, password, 'User'];
+    const result = await pool.query(queryText, values);
+
+    return res.json({ 
+      success: true, 
+      message: "Η εγγραφή έγινε με επιτυχία! Τώρα μπορείτε να συνδεθείτε.",
+      user: result.rows[0]
+    });
+
+  } catch (err) {
+    console.error(err.message);
+    return res.status(500).json({ success: false, message: "Σφάλμα συστήματος κατά την εγγραφή." });
+  }
 });
 
 // 3. ROUTE: Fetch all players (Ανοιχτό για όλους)
