@@ -8,7 +8,6 @@ const app = express();
 const PORT = 5000;
 
 app.use(express.json());
-const cors = require('cors');
 app.use(cors()); // Επιτρέπει σε όλα τα sites (όπως το Vercel) να του μιλάνε
 
 // 🚨 Το κρυφό κλειδί για την υπογραφή των JWT
