@@ -1,6 +1,6 @@
 import './App.css';
 import { useState } from 'react';
-import { usePlayers } from './usePlayers';
+import { usePlayers } from './UsePlayers';
 import LoginForm from './LoginForm';
 import PlayerCard from './PlayerCard';
 import AddPlayerForm from './AddPlayerForm';
