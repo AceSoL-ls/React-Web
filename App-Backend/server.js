@@ -102,7 +102,8 @@ app.delete('/api/players/:id', verifyAdmin, async (req, res) => {
 // FRONTEND STATIC SERVING
 const buildPath = path.join(__dirname, '../React-app-1/dist');
 app.use(express.static(buildPath));
-app.get('/*', (req, res) => {
+// Αντί για '/*', βάλε αυτό ακριβώς:
+app.get(/^(?!\/api).+/, (req, res) => {
   res.sendFile(path.join(buildPath, 'index.html'));
 });
 
