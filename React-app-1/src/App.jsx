@@ -4,7 +4,7 @@ import { usePlayers } from './usePlayers';
 import LoginForm from './LoginForm';
 import PlayerCard from './PlayerCard';
 import AddPlayerForm from './AddPlayerForm';
-import { jwtDecode } from 'jwt-decode'; // 👈 1. Εισαγωγή του decoder
+import { jwtDecode } from 'jwt-decode';
 import nickPic from './assets/Nick.jpg';
 import mariaPic from './assets/Maria.jpg';
 import johnPic from './assets/John.png';
@@ -13,10 +13,11 @@ function App() {
   const [token, setToken] = useState(localStorage.getItem('token'));
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
+  const [activeMenu, setActiveMenu] = useState("leaderboard");
+  const [isSidebarOpen, setIsSidebarOpen] = useState(true); // 👈 State για ανοιχτό/κλειστό sidebar
   
   const { players, addNewPlayer, handleLikePlayer, handleDeletePlayer } = usePlayers(); 
 
-  // 👈 2. Αποκωδικοποίηση του token για να πάρουμε τα στοιχεία του τρέχοντος χρήστη
   let currentUser = { username: 'Guest', role: 'User' };
   if (token) {
     try {
@@ -42,70 +43,116 @@ function App() {
   });
 
   return (
-    <div className="dashboard-container">
+    <div className="app-layout">
       
-      {/* 👑 Δυναμικό Top Bar με τα στοιχεία του τρέχοντος χρήστη */}
-      <div className="top-bar">
-        <span className="user-badge">
-          {currentUser.role === 'Admin' ? '👑 Admin: ' : '🎮 User: '} {currentUser.username}
-        </span>
-        <button 
-          className="btn-logout"
-          onClick={() => {
-            localStorage.removeItem('token');
-            setToken(null);
-          }}
-        >
-          Logout 🚪
-        </button>
-      </div>
-
-      <h1 className="dashboard-title">Gamer Leaderboard ⚔️</h1>
-
-      <div className="search-bar">
-        <input 
-          type="text" 
-          placeholder="Search players..." 
-          value={searchQuery} 
-          onChange={(e) => setSearchQuery(e.target.value)}
-          className="search-input"
-        />
-      </div>
-      
-      {currentUser.role === 'Admin' && (
-        <div className="action-bar">
-          <button className="btn-open-modal" onClick={() => setIsModalOpen(true)}>
-            ➕ Create New Challenger
+      {/* 👑 TOP NAVBAR */}
+      <header className="top-navbar">
+        <div className="nav-left">
+          {/* ☰ Κουμπί για Toggle του Sidebar */}
+          <button className="btn-toggle-sidebar" onClick={() => setIsSidebarOpen(!isSidebarOpen)}>
+            ☰
+          </button>
+          <div className="nav-logo">Gamer Leaderboard ⚔️</div>
+        </div>
+        <div className="nav-user-zone">
+          <span className="user-badge">
+            {currentUser.role === 'Admin' ? '👑 Admin: ' : '🎮 User: '} {currentUser.username}
+          </span>
+          <button 
+            className="btn-logout"
+            onClick={() => {
+              localStorage.removeItem('token');
+              setToken(null);
+            }}
+          >
+            Logout 🚪
           </button>
         </div>
-      )}
+      </header>
 
-      {/* Conditional Rendering Modal */}
-      {isModalOpen && (
-        <AddPlayerForm 
-          onAddPlayer={(name, game, level, gold) => {
-            addNewPlayer(name, game, level, gold, () => setIsModalOpen(false));
-          }} 
-          onClose={() => setIsModalOpen(false)} 
-        />
-      )}
+      {/* Κεντρικό Container */}
+      <div className="main-container">
+        
+        {/* 📊 LEFT SIDEBAR (Με δυναμική κλάση closed) */}
+        <aside className={`left-sidebar ${isSidebarOpen ? '' : 'closed'}`}>
+          <nav className="sidebar-menu">
+            <button 
+              className={`menu-item ${activeMenu === 'leaderboard' ? 'active' : ''}`}
+              onClick={() => setActiveMenu('leaderboard')}
+            >
+              📊 Leaderboard
+            </button>
+            <button 
+              className={`menu-item ${activeMenu === 'profile' ? 'active' : ''}`}
+              onClick={() => setActiveMenu('profile')}
+            >
+              👤 My Profile
+            </button>
+            <button 
+              className={`menu-item ${activeMenu === 'settings' ? 'active' : ''}`}
+              onClick={() => setActiveMenu('settings')}
+            >
+              ⚙️ Settings
+            </button>
+          </nav>
+        </aside>
 
-      {/* THE GRID LAYOUT */}
-      <div className="player-grid">
-        {filteredPlayers.map((player) => (
-          <PlayerCard 
-            key={player.id} 
-            name={player.name} 
-            game={player.game} 
-            level={player.level} 
-            gold={player.gold} 
-            likes={player.likes} 
-            image={getPlayerImage(player.name)} 
-            onLike={() => handleLikePlayer(player.id)}
-            onDelete={() => handleDeletePlayer(player.id)}
-            userRole={currentUser.role}
-          />
-        ))}
+        {/* 🖥️ MAIN CONTENT WINDOW */}
+        <main className="content-window">
+          {activeMenu === 'leaderboard' ? (
+            <>
+              <div className="dashboard-actions">
+                <input 
+                  type="text" 
+                  placeholder="Search players..." 
+                  value={searchQuery} 
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  className="search-input"
+                />
+                
+                {currentUser.role === 'Admin' && (
+                  <button className="btn-open-modal" onClick={() => setIsModalOpen(true)}>
+                    ➕ Create New Challenger
+                  </button>
+                )}
+              </div>
+
+              {/* Conditional Rendering Modal */}
+              {isModalOpen && (
+                <AddPlayerForm 
+                  onAddPlayer={(name, game, level, gold) => {
+                    addNewPlayer(name, game, level, gold, () => setIsModalOpen(false));
+                  }} 
+                  onClose={() => setIsModalOpen(false)} 
+                />
+              )}
+
+              {/* THE GRID LAYOUT */}
+              <div className="player-grid">
+                {filteredPlayers.map((player) => (
+                  <PlayerCard 
+                    key={player.id} 
+                    name={player.name} 
+                    game={player.game} 
+                    level={player.level} 
+                    gold={player.gold} 
+                    likes={player.likes} 
+                    image={getPlayerImage(player.name)} 
+                    onLike={() => handleLikePlayer(player.id)}
+                    onDelete={() => handleDeletePlayer(player.id)}
+                    userRole={currentUser.role}
+                  />
+                ))}
+              </div>
+            </>
+          ) : (
+            <div className="placeholder-view">
+              <h2>Έρχεται σύντομα! 🚀</h2>
+              <p>Αυτή η ενότητα ({activeMenu}) θα εμπλουτιστεί στο επόμενο βήμα μας.</p>
+            </div>
+          )}
+        </main>
+
       </div>
     </div>
   );
