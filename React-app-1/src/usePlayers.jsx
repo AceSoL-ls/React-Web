@@ -3,10 +3,11 @@ import { useState, useEffect } from 'react';
 
 export function usePlayers() {
   const [players, setPlayers] = useState([]);
+  const baseUrl = "https://react-web-aoqq.onrender.com"; // 👈 Το live URL του backend σου!
 
-  // 1. GET - Φόρτωση παικτών (Ανοιχτό, δεν θέλει token)
+  // 1. GET - Φόρτωση παικτών
   useEffect(() => {
-    fetch('/api/players')
+    fetch(`${baseUrl}/api/players`)
       .then((res) => res.json())
       .then((data) => {
         if (Array.isArray(data)) {
@@ -18,15 +19,15 @@ export function usePlayers() {
       .catch((err) => console.error("Error loading players:", err));
   }, []);
 
-  // 2. POST - Προσθήκη νέου παίκτη (🔐 ΘΕΛΕΙ TOKEN)
+  // 2. POST - Προσθήκη νέου παίκτη
   const addNewPlayer = (name, game, level, gold, onSuccess) => {
-    const token = localStorage.getItem('token'); // 👈 Παίρνουμε το token
+    const token = localStorage.getItem('token'); 
 
-    fetch('/api/players', {
+    fetch(`${baseUrl}/api/players`, {
       method: 'POST',
       headers: { 
         'Content-Type': 'application/json',
-        'Authorization': `Bearer ${token}` // 👈 Το στέλνουμε στον server
+        'Authorization': `Bearer ${token}` 
       },
       body: JSON.stringify({ name, game, level, gold })
     })
@@ -36,16 +37,16 @@ export function usePlayers() {
     })
     .then(newPlayerFromDb => {
       setPlayers(prevPlayers => [...prevPlayers, newPlayerFromDb]);
-      if (onSuccess) onSuccess(); // Κλείνει το modal
+      if (onSuccess) onSuccess(); 
     })
     .catch(err => {
-      alert(err.message); // Αν αποτύχει, βγάζει ένα ωραίο μήνυμα αντί να κρασάρει η σελίδα
+      alert(err.message); 
     });
   };
 
-  // 3. POST - Like (Ανοιχτό, δεν θέλει token - Διορθώθηκε σε POST)
+  // 3. POST - Like
   const handleLikePlayer = (id) => {
-    fetch(`/api/players/${id}/like`, { method: 'POST' })
+    fetch(`${baseUrl}/api/players/${id}/like`, { method: 'POST' })
       .then((res) => {
         if (res.ok) {
           setPlayers(players.map(p => p.id === id ? { ...p, likes: (p.likes || 0) + 1 } : p));
@@ -54,14 +55,14 @@ export function usePlayers() {
       .catch(err => console.error("Error liking:", err));
   };
 
-  // 4. DELETE - Διαγραφή (🔐 ΘΕΛΕΙ TOKEN - ΕΔΩ ΗΤΑΝ ΤΟ ΛΑΘΟΣ!)
+  // 4. DELETE - Διαγραφή
   const handleDeletePlayer = (id) => {
-    const token = localStorage.getItem('token'); // 👈 Παίρνουμε το token
+    const token = localStorage.getItem('token'); 
 
-    fetch(`/api/players/${id}`, { 
+    fetch(`${baseUrl}/api/players/${id}`, { 
       method: 'DELETE',
       headers: {
-        'Authorization': `Bearer ${token}` // 👈 Το στέλνουμε και εδώ!
+        'Authorization': `Bearer ${token}` 
       }
     })
     .then((res) => {
@@ -69,7 +70,7 @@ export function usePlayers() {
       setPlayers(players.filter(p => p.id !== id));
     })
     .catch(err => {
-      alert(err.message); // Βγάζει μήνυμα αν πάει κάτι στραβά
+      alert(err.message); 
     });
   };
 
