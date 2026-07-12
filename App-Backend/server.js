@@ -8,18 +8,16 @@ const app = express();
 const PORT = 5000;
 
 app.use(express.json());
-app.use(cors()); // Για να επιτρέπουμε requests από το frontend
+const cors = require('cors');
+app.use(cors()); // Επιτρέπει σε όλα τα sites (όπως το Vercel) να του μιλάνε
 
 // 🚨 Το κρυφό κλειδί για την υπογραφή των JWT
 const JWT_SECRET = "my_super_secret_game_leaderboard_key_123!";
 
 // 1. LINK TO DOCKER DATABASE USING YOUR CREDENTIALS
 const pool = new Pool({
-  user: 'gamer_admin',
-  host: 'localhost',
-  database: 'leaderboard_data',
-  password: 'super_secret_password123',
-  port: 5432,
+  connectionString: process.env.DATABASE_URL || 'postgresql://gamer_admin:super_secret_password123@localhost:5432/leaderboard_data',
+  ssl: process.env.DATABASE_URL ? { rejectUnauthorized: false } : false
 });
 
 // 2. AUTOMATIC TABLE CREATOR: Builds the structure if it doesn't exist
